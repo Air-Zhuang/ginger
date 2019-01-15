@@ -1,0 +1,6 @@
+SQLALCHEMY_DATABASE_URI='mysql+cymysql://root:123456@127.0.0.1:3306/ginger'
+
+SECRET_KEY='xxxxxx'
+TOKEN_EXPIRATION=30*24*3600
+
+DEBUG=True

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AJAX</title>
+
+    <style type="text/css">
+    </style>
+</head>
+<body>
+想要搜索的书名：<input type="text" name="searchbookname" value="c">
+<button class="searchbookclass">查找图书</button>
+<hr>
+
+用户名：<input type="text" name="name" value="999@qq.com">
+密码：<input type="text" name="password" value="123456">
+<button class="gene">生成令牌</button>
+<hr>
+token：<input type="text" name="token"
+             value="">
+<button class="ana">解析令牌</button>
+<hr>
+base64加密(加:)：<input type="text" name="base-encode"
+             value="">
+<button class="base64-encode">base64加密(加:)</button>
+<hr>
+携带token：<input type="text" name="user-token"
+             value="">
+<button class="get-user">get-user(携带token)</button>
+<hr>
+
+
+<div class="context"></div>
+<script src="../static/js/jquery-2.1.1.js"></script>
+<script src="../static/js/common.js"></script>
+<script src="../static/js/layer/layer.js"></script>
+<script src="../static/js/base64.min.js"></script>
+<script src="../static/js/jquery.cookie.js"></script>
+<script>
+    var test = {
+        init: function () {
+            this.eventBind();
+        },
+        resetdiv: function () {
+            $(".context").remove();
+            var div = $('<div class="context"></div>');
+            $("body").append(div);
+        },
+        eventBind: function () {
+            var that = this;
+            var host = "http://127.0.0.1:5000";
+
+            $(".searchbookclass").click(function () {       //get请求查找图书
+                var bookname = $("input[name=searchbookname]").val();
+                $.ajax({
+                    url: host+"/v1/book/search?q=" + bookname,
+                    type: "GET",
+                    dataType: 'json',
+                    success: function (result) {
+                        console.log(result);
+                        that.resetdiv();
+                        var div = $(".context");
+                        var json = result.result;
+                        for (var i = 0; i < json.length; i++) {
+                            var p = $('<p></p>').text(json[i]['title']);
+                            div.append(p)
+                        }
+                    }
+                })
+            });
+
+            $(".gene").click(function () {          //生成令牌，放入到两个输入框
+                var name = $("input[name=name]").val();
+                var password = $("input[name=password]").val();
+                $.ajax({
+                    url: host+"/v1/token",
+                    type: "POST",
+                    contentType: 'application/json',
+                    data: JSON.stringify({account: name, secret: password, type: 100}),
+                    success: function (result) {
+                        console.log(result);
+                        $("input[name=token]").attr("value",result["token"]);
+                        $("input[name=base-encode]").attr("value",result["token"]);
+                    },
+                })
+            });
+            $(".ana").click(function () {           //解析令牌信息
+                var token = $("input[name=token]").val();
+                $.ajax({
+                    url: host+"/v1/token/secret",
+                    type: "POST",
+                    contentType: 'application/json',
+                    data: JSON.stringify({token: token}),
+                    success: function (result) {
+                        console.log(result);
+                        that.resetdiv();
+                        var div = $(".context");
+                        var json = result;
+                        for (var key in result) {
+                            var p = $("<p></p>").text(key + " : " + json[key]);
+                            div.append(p)
+                        }
+                    },
+                })
+            });
+            $(".base64-encode").click(function () {     //base64+:加密，将结果放入到输入框和cookie中
+                var token=$("input[name=base-encode]").val();
+                var encodeStr=Base64.encode(token+":");
+                $("input[name=user-token]").attr("value",encodeStr);
+                $.cookie('token', encodeStr, { expires: 1 });
+            });
+            $(".get-user").click(function () {          //依次判断base64加密后的token是否在输入框，cookie中，携带token发送get请求
+                if($("input[name=user-token]").val()!=""){
+                    common_ops.alert("token在input中");
+                    var token = $("input[name=user-token]").val();
+                }else if($.cookie('token')!=null){
+                    common_ops.alert("token在cookie中");
+                    var token=$.cookie('token');
+                }else{
+                    common_ops.alert("没找到token!");
+                    return;
+                }
+                $.ajax({
+                    url: host+"/v1/user",
+                    type: "GET",
+                    dataType: 'json',
+                    beforeSend: function (xhr) {
+    		            xhr.setRequestHeader ("Authorization", "Basic "+token);
+    		        },
+                    success: function (result) {
+                        console.log(result);
+                        that.resetdiv();
+                        var div = $(".context");
+                        var json = result;
+                        for (var key in result) {
+                            var p = $("<p></p>").text(key + " : " + json[key]);
+                            div.append(p)
+                        }
+                    }
+                })
+            });
+        }
+    };
+
+    $(document).ready(function () {
+        test.init();
+    })
+</script>
+</body>
+</html>

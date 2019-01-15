@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <style type="text/css">
+    </style>
+</head>
+
+<input class="inp" type="text">
+<button class="but">按钮</button>
+
+<script src="../static/js/jquery-2.1.1.js"></script>
+<script src="../static/js/common.js"></script>
+<script src="../static/js/layer/layer.js"></script>
+<script src="../static/js/base64.min.js"></script>
+<script>
+    var text="123";
+    var input=$(".inp");
+    $(".but").click(function () {
+        input.attr("value",text)
+    })
+</script>
+</body>
+</html>
