@@ -12,7 +12,7 @@ class BaseForm(Form):
     def __init__(self):
         # data=request.json                             #这里直接传入表单信息，就不用在视图函数中传入了
         data = request.get_json(silent=True)            #用silent=True这种方式的到get中的请求参数，不会报错
-        args=request.args.to_dict()                     #get请求参数
+        args=request.args.to_dict()                     #获取get请求参数
         super(BaseForm,self).__init__(data=data,**args)
     def validate_for_api(self):                         #我们不想覆盖原有的validate方法，所以我们重新写了一个方法
         valid=super(BaseForm,self).validate()           #先获取  validate()  内容

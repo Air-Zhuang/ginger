@@ -17,8 +17,11 @@ class Book(Base):
     summary = Column(String(1000))
     image = Column(String(50))
 
-
-    @orm.reconstructor      #默认通过Book.query使用sqlalchemy的时候不会触发每个模型的__init__方法。打上装饰器才会执行__init__方法
+    '''
+    不能将fields写成类变量，因为一旦修改fields，会影响其他的book对象，但是
+    默认通过Book.query使用sqlalchemy的时候不会触发每个模型的__init__方法。打上装饰器才会执行__init__方法
+    '''
+    @orm.reconstructor
     def __init__(self):
         self.fields = ['id', 'title', 'author', 'binding',
                        'publisher',
