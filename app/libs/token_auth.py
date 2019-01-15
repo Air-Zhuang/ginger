@@ -10,8 +10,13 @@ from app.libs.scope import is_in_scope
 auth=HTTPBasicAuth()    #利用HTTP本身的协议提交token。放在HTTP的头部。
 User=namedtuple('User',['uid','ac_type','scope'])
 
+'''
+这里将token当做账号，密码不传的方式来传送token,password占位用。(如果实际调用，传入的key:value要经过base64加密)
+verify_password接收令牌-->交给verify_auth_token解析-->将解析出的用户信息通过namedtuple存放在g变量中
+'''
+
 @auth.verify_password
-def verify_password(token,password):    #这里将token当做账号，密码不传的方式来传送token,password占位用。(如果实际调用，传入的key:value要经过base64加密)
+def verify_password(token,password):
     '''
     header传账号密码格式:
         key=Authorization

@@ -27,13 +27,13 @@ class Query(BaseQuery):
     def get_or_404(self, ident):    #重写get_or_404,返回自定义异常
         rv = self.get(ident)
         if not rv:
-            raise NotFound()
+            raise NotFound()        #被HTTPException()捕获
         return rv
 
     def first_or_404(self):         #first_or_404,返回自定义异常
         rv = self.first()
         if not rv:
-            raise NotFound()
+            raise NotFound()        #被HTTPException()捕获
         return rv
 
 

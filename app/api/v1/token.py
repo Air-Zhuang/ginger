@@ -12,7 +12,10 @@ api=Redprint('token')
 
 @api.route('',methods=['POST'])
 def get_token():
-    """生成令牌"""
+    """
+    生成令牌
+    传入账号密码-->验证是否有这个用户-->返回id,scope-->生成令牌：将id,客户端类型,scope,过期时间,SECRET_KEY写入到令牌中-->返回给客户端这个令牌
+    """
     '''
         http://localhost:5000/v1/token
         {"account":"999@qq.com","secret":"123456","type":100}
