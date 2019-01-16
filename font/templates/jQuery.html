@@ -12,6 +12,10 @@
 <button class="searchbookclass">查找图书</button>
 <hr>
 
+isbn：<input type="text" name="bookdetailname" value="9787111128069">
+<button class="bookdetailclass">获取书的详情</button>
+<hr>
+
 用户名：<input type="text" name="name" value="999@qq.com">
 密码：<input type="text" name="password" value="123456">
 <button class="gene">生成令牌</button>
@@ -69,6 +73,25 @@ base64加密(加:)：<input type="text" name="base-encode"
                 })
             });
 
+            $(".bookdetailclass").click(function () {       //get获取书的详情
+                var isbn = $("input[name=bookdetailname]").val();
+                $.ajax({
+                    url: host+"/v1/book/"+isbn+"/detail",
+                    type: "GET",
+                    dataType: 'json',
+                    success: function (result) {
+                        console.log(result);
+                        that.resetdiv();
+                        var div = $(".context");
+                        var json = result;
+                        for (var key in result) {
+                            var p = $("<p></p>").text(key + " : " + json[key]);
+                            div.append(p)
+                        }
+                    }
+                })
+            });
+
             $(".gene").click(function () {          //生成令牌，放入到两个输入框
                 var name = $("input[name=name]").val();
                 var password = $("input[name=password]").val();
@@ -106,13 +129,13 @@ base64加密(加:)：<input type="text" name="base-encode"
             $(".base64-encode").click(function () {     //base64+:加密，将结果放入到输入框和cookie中
                 var token=$("input[name=base-encode]").val();
                 var encodeStr=Base64.encode(token+":");
-                $("input[name=user-token]").attr("value",encodeStr);
+                $("input[name=base-encode]").attr("value",encodeStr);
                 $.cookie('token', encodeStr, { expires: 1 });
             });
-            $(".get-user").click(function () {          //依次判断base64加密后的token是否在输入框，cookie中，携带token发送get请求
-                if($("input[name=user-token]").val()!=""){
+            $(".get-user").click(function () {          //依次判断base64加密后的token是否在输入框，cookie中，携带token发送get_user请求
+                if($("input[name=base-encode]").val()!=""){
                     common_ops.alert("token在input中");
-                    var token = $("input[name=user-token]").val();
+                    var token = $("input[name=base-encode]").val();
                 }else if($.cookie('token')!=null){
                     common_ops.alert("token在cookie中");
                     var token=$.cookie('token');
