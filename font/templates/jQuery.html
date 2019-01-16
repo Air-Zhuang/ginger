@@ -136,7 +136,17 @@ base64加密(加:)：<input type="text" name="base-encode"
                             var p = $("<p></p>").text(key + " : " + json[key]);
                             div.append(p)
                         }
-                    }
+                    },
+                    error: function (result) {
+                        console.log(result);
+                        that.resetdiv();
+                        var div = $(".context");
+                        var json = result;
+                        for (var key in result) {
+                            var p = $("<p></p>").text(key + " : " + json[key]);
+                            div.append(p)
+                        }
+                    },
                 })
             });
         }
