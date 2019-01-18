@@ -23,6 +23,9 @@ def search():
 
 @api.route('/<isbn>/detail')
 def detail(isbn):
+    '''
+    url http://localhost:5000/v1/book/9787111128069/detail
+    '''
     book=Book.query.filter_by(isbn=isbn).first_or_404()
     return jsonify(book)
 

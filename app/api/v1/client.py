@@ -10,6 +10,10 @@ api=Redprint('client')
 
 @api.route('/register',methods=['POST'])
 def create_client():
+    '''
+    http://127.0.0.1:5000/v1/client/register
+    {"account":"111@qq.com","secret":"123456","type":100,"nickname":"sanic"}
+    '''
     form=ClientForm().validate_for_api()                #已经在BaseForm重写了__init__方法，这里不需要传入表单信息了。如果传过来的是json,要用data=data。使用自己重写的validate方法
     promise={                                           #用字典的形式处理不同客户端的处理方式
         ClientTypeEnum.USER_EMAIL:__register_user_by_email
